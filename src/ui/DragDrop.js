@@ -15,10 +15,32 @@ export const useDragAndDrop = (gridRef) => {
     if (!activePiece) return;
     const pos = e.touches ? e.touches[0] : e; setDragPos({ x: pos.clientX, y: pos.clientY });
     if (!gridRef.current) return;
-    const rect = gridRef.current.getBoundingClientRect(); const cellSize = rect.width / grid.length;
-    const x = pos.clientX - rect.left; const y = pos.clientY - rect.top;
-    const col = Math.floor(x / cellSize); const row = Math.floor(y / cellSize);
-    if (row >= 0 && row < grid.length && col >= 0 && col < grid.length) {
+
+    const rect = gridRef.current.getBoundingClientRect();
+    const style = window.getComputedStyle(gridRef.current);
+    const padding = parseFloat(style.paddingLeft);
+    const innerGrid = gridRef.current.querySelector('.grid');
+    const gap = innerGrid ? parseFloat(window.getComputedStyle(innerGrid).gap) : 0;
+
+    const gridSize = grid.length;
+    const cellSize = (rect.width - 2 * padding - (gridSize - 1) * gap) / gridSize;
+
+    // The dragged piece is offset by -80px vertically in App.jsx
+    const visualX = pos.clientX - rect.left - padding;
+    const visualY = (pos.clientY - 80) - rect.top - padding;
+
+    const minR = Math.min(...activePiece.cells.map(([r]) => r));
+    const maxR = Math.max(...activePiece.cells.map(([r]) => r));
+    const minC = Math.min(...activePiece.cells.map(([c]) => c));
+    const maxC = Math.max(...activePiece.cells.map(([c]) => c));
+
+    const centerCol = (visualX - cellSize / 2) / (cellSize + gap);
+    const centerRow = (visualY - cellSize / 2) / (cellSize + gap);
+
+    const col = Math.round(centerCol - (minC + maxC) / 2);
+    const row = Math.round(centerRow - (minR + maxR) / 2);
+
+    if (row >= 0 && row < gridSize && col >= 0 && col < gridSize) {
       if (canPlace(grid, activePiece.cells, row, col)) setGhostPos({ row, col }); else setGhostPos(null);
     } else setGhostPos(null);
   }, [activePiece, grid, gridRef]);

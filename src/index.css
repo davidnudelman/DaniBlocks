@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 :root {
-  background-color: #FFF0F5;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -18,6 +17,8 @@ body {
   min-width: 320px;
   min-height: 100vh;
   overflow: hidden;
+  background: #FFF0F5;
+  font-family: 'Fredoka', sans-serif;
 }
 
 #root {
@@ -31,4 +32,35 @@ body {
 
 .safe-bottom {
   padding-bottom: env(safe-area-inset-bottom);
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Custom rounded corners */
+.rounded-grid {
+  border-radius: 2rem;
+}
+
+.rounded-cell {
+  border-radius: 0.75rem;
+}
+
+/* Animations */
+@keyframes bounce-short {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-20px) scale(1.05); }
+}
+
+.animate-bounce-short {
+  animation: bounce-short 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
